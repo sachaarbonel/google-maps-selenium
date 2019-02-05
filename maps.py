@@ -94,10 +94,13 @@ if __name__ == "__main__":
     driver.set_page_load_timeout(30)
     driver.set_script_timeout(30)
     wait = WebDriverWait(driver, 10)
+    time.sleep(3)
+    driver.execute_script(
+        "window.document.getElementById('n7lv7yjyC35__section-pagination-button-next').click();")
 
-    for i in range(1, 20):
-        name, phone = extract_hotel_info(i)
-        writeToCsv(name, phone)
-        driver.execute_script(script="window.history.back(-1);")
+    # for i in range(1, 20):
+    #     name, phone = extract_hotel_info(i)
+    #     writeToCsv(name, phone)
+    #     driver.execute_script(script="window.history.back(-1);")
 
-    driver.quit()
+    # driver.quit()
