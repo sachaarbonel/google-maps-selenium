@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 import time
 from selenium import webdriver
+import csv
 
 
 def wait_and_find(waitDriver: WebDriverWait, xpath: str)->str:
@@ -26,7 +27,7 @@ def hotel_xpath(id: int):
     return section_result_xpath
 
 
-def extract_hotel_info(id: int):
+def extract_hotel_info(id: int)->(str, str):
     section_result_xpath = hotel_xpath(id)
     wait_and_click(wait, section_result_xpath)
     phone_number_xpath = '//*[@id="pane"]/div/div[1]/div/div/div[18]/div/div[1]/span[3]/span[3]'
@@ -38,7 +39,16 @@ def extract_hotel_info(id: int):
     time.sleep(2)
     current_url = driver.current_url
     print(current_url)
-    driver.back()
+    print("please skip manually if no response")
+    return hotel, phone
+
+
+def writeToCsv(name: str, phone: str):
+    with open('results.csv', 'a', newline='') as csvfile:
+        fieldnames = ['name', 'phone']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writerow({'name': name, 'phone': phone})
 
 
 if __name__ == "__main__":
@@ -46,18 +56,13 @@ if __name__ == "__main__":
     driver = webdriver.Chrome()
     url = 'https://www.google.com/maps/search/H%C3%B4tels/@14.4964286,-61.0759903,13z'
     driver.get(url)  # lat, long, zoom level
-
+    driver.set_page_load_timeout(30)
+    driver.set_script_timeout(30)
     wait = WebDriverWait(driver, 10)
 
-    hotel_ids = []
-    for elt in driver.find_elements_by_xpath('//*[contains(concat( " ", @class, " " ), concat( " ", "section-result", " " ))]'):
-        hotel_ids.append(elt.get_attribute('data-result-index'))
+    for i in range(1, 20):
+        name, phone = extract_hotel_info(i)
+        writeToCsv(name, phone)
+        driver.execute_script(script="window.history.back();")
 
-    for hotel_id in hotel_ids:
-        print(hotel_id)
-
-    id = 1  # hardcoded
-    extract_hotel_info(id)
-    id = 2
-    extract_hotel_info(id)
     driver.quit()
