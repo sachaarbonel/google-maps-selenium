@@ -1,12 +1,8 @@
-from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 import time
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from bs4 import BeautifulSoup
-import queue
 
 
 def wait_and_find(waitDriver: WebDriverWait, xpath: str)->str:
@@ -22,32 +18,16 @@ def wait_and_click(waitDriver: WebDriverWait, xpath: str):
     page.click()
 
 
-def hotel_xpath(r):
+def hotel_xpath(id: int):
     index = 1
-    newindex = r*2-index
+    newindex = id*2-index
     div_id = str(newindex)
     section_result_xpath = '//*[@id="pane"]/div/div[1]/div/div/div[4]/div['+div_id+']'
     return section_result_xpath
 
 
-if __name__ == "__main__":
-
-    driver = webdriver.Chrome()
-    url = 'https://www.google.com/maps/search/H%C3%B4tels/@14.4964286,-61.0759903,13z'
-    driver.get(
-        url)  # lat, long, zoom level
-
-    wait = WebDriverWait(driver, 10)
-
-    results = []
-    for elt in driver.find_elements_by_xpath('//*[contains(concat( " ", @class, " " ), concat( " ", "section-result", " " ))]'):
-        results.append(elt.get_attribute('data-result-index'))
-
-    for r in results:
-        print(r)
-
-    r = 1
-    section_result_xpath = hotel_xpath(r)
+def extract_hotel_info(id: int):
+    section_result_xpath = hotel_xpath(id)
     wait_and_click(wait, section_result_xpath)
     phone_number_xpath = '//*[@id="pane"]/div/div[1]/div/div/div[18]/div/div[1]/span[3]/span[3]'
     phone = wait_and_find(wait, phone_number_xpath)
@@ -56,19 +36,28 @@ if __name__ == "__main__":
     hotel = wait_and_find(wait, hotel_name_xpath)
     print(hotel)
     time.sleep(2)
-    driver.back()
-    # driver.forward()
     current_url = driver.current_url
     print(current_url)
+    driver.back()
 
-    # driver.refresh()
-    # print("driver refreshed")
-    r = 2
-    s = hotel_xpath(r)
-    wait_and_click(wait, s)
-    print("clicked")
-    time.sleep(2)
-    phone2 = wait_and_find(wait, phone_number_xpath)
-    print(phone2)
-    print(driver.current_url)
+
+if __name__ == "__main__":
+
+    driver = webdriver.Chrome()
+    url = 'https://www.google.com/maps/search/H%C3%B4tels/@14.4964286,-61.0759903,13z'
+    driver.get(url)  # lat, long, zoom level
+
+    wait = WebDriverWait(driver, 10)
+
+    hotel_ids = []
+    for elt in driver.find_elements_by_xpath('//*[contains(concat( " ", @class, " " ), concat( " ", "section-result", " " ))]'):
+        hotel_ids.append(elt.get_attribute('data-result-index'))
+
+    for hotel_id in hotel_ids:
+        print(hotel_id)
+
+    id = 1  # hardcoded
+    extract_hotel_info(id)
+    id = 2
+    extract_hotel_info(id)
     driver.quit()
