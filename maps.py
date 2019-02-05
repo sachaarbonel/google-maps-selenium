@@ -6,6 +6,8 @@ from selenium import webdriver
 import csv
 import re
 
+from processing import exists
+
 
 def wait_and_find(waitDriver: WebDriverWait, xpath: str)->str:
 
@@ -45,20 +47,12 @@ def extract_hotel_info(id: int)->(str, str):
     return hotel, phone
 
 
-def exists(name: str)->bool:
-    with open('results.csv') as csvfile:
-
-        reader = csv.DictReader(csvfile)
-
-        for row in reader:
-            return row["name"] == name
-
-
 def writeToCsv(name: str, phone: str):
     with open('results.csv', 'a', newline='') as csvfile:
         fieldnames = ['name', 'phone']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writerow({'name': name, 'phone': phone})
+        if not exists(name):
+            writer.writerow({'name': name, 'phone': phone})
 
 
 def get_phone_number(elements: object)->str:
