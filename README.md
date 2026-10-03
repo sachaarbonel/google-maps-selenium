@@ -1,5 +1,7 @@
 # Google Maps foodie dataset — Paris
 
+Continuing this work on a Mac? Read [HANDOFF.md](HANDOFF.md) for current validation limits and the next steps.
+
 Discover food places across Paris and collect their Google Maps details, including **explicitly labelled AI summaries when Maps makes them available**. This replaces the original hardcoded hotel experiment with a Selenium 4 command-line collector.
 
 The default search plan covers **24 food categories × 20 arrondissements = 480 searches**: restaurants, bakeries, pâtisseries, cafés, bistros, brasseries, fine dining, street food, brunch, vegetarian/vegan restaurants, crêperies, pizzerias, ice cream, chocolate, cheese, delis, markets, wine bars serving food, seafood, butchers, fishmongers, tea rooms, and food halls.
