@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "google-maps-foodies"
+version = "0.1.0"
+description = "Resumable Paris food discovery and Google Maps summary collection"
+requires-python = ">=3.10"
+dependencies = ["selenium>=4.25,<5", "beautifulsoup4>=4.12,<5"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+foodie-maps = "foodie_maps.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["foodie_maps*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

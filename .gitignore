@@ -102,3 +102,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Collected datasets and rendered browser evidence
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.chrome-profile/
